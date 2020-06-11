@@ -29,3 +29,5 @@ public class ItemCategory extends BaseDto implements Comparable<ItemCategory> {
 		return this.getId().compareTo(o.getId());
 	}
 }
+
+// Test
