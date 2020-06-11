@@ -76,3 +76,4 @@ public class ManufacturersMenu {
 		goodsReleaseService.removeManufacturer(id);
 	}
 }
+// klasa bedzie odnosic sie do administracji producentami
