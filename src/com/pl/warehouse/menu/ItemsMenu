@@ -1,0 +1,162 @@
+package com.pl.warehouse.menu;
+
+import com.pl.warehouse.dto.Item;
+import com.pl.warehouse.service.GoodsRegisterService;
+import com.pl.warehouse.service.GoodsReleaseService;
+import com.pl.warehouse.service.GoodsVerificationService;
+import java.util.Scanner;
+
+public class ItemsMenu {
+
+	final public static ItemsMenu instance = new ItemsMenu(
+			new GoodsRegisterService(),
+			new GoodsVerificationService(),
+			new GoodsReleaseService()
+	);
+
+	private final GoodsRegisterService goodsRegisterService;
+	private final GoodsVerificationService goodsVerificationService;
+	private final GoodsReleaseService goodsReleaseService;
+
+	private ItemsMenu(
+			GoodsRegisterService goodsRegisterService,
+			GoodsVerificationService goodsVerificationService,
+			GoodsReleaseService goodsReleaseService
+	) {
+		this.goodsRegisterService = goodsRegisterService;
+		this.goodsVerificationService = goodsVerificationService;
+		this.goodsReleaseService = goodsReleaseService;
+	}
+
+	public void menu(Scanner scanner) {
+		String choice = null;
+		while (!"0".equals(choice)) {
+			System.out.println("\n------Menu produktów------");
+			System.out.println("Wybierz 0 aby wyjść do głównego menu!\n" +
+					"1 - Dodawanie produktów.\n" +
+					"2 - Dodawanie opisu produktu.\n" +
+					"3 - Sprawdzenie stanu magazynowego.\n" +
+					"4 - Sprawdzenie dostępności produktu.\n" +
+					"5 - Lista produktów.\n" +
+					"6 - Lokalizacja produktu.\n" +
+					"7 - Korekta stanu magazynowego produktu.\n" +
+					"8 - Usuwanie produktów.");
+			choice = scanner.nextLine();
+			switch (choice) {
+				case "1":
+					addItem(scanner);
+					choice = null;
+					break;
+				case "2":
+					addItemDescription(scanner);
+					choice = null;
+					break;
+				case "3":
+					checkQuantity(scanner);
+					choice = null;
+					break;
+				case "4":
+					checkExists(scanner);
+					choice = null;
+					break;
+				case "5":
+					goodsVerificationService.listItems();
+					choice = null;
+					break;
+				case "6":
+					itemLocation(scanner);
+					choice = null;
+					break;
+				case "7":
+					changeItemQuantity(scanner);
+					choice = null;
+					break;
+				case "8":
+					removeItem(scanner);
+					choice = null;
+					break;
+			}
+		}
+	}
+
+	private void addItem(Scanner scanner) {
+		System.out.println("Podaj nazwe produktu");
+		String name = scanner.nextLine();
+		while (goodsVerificationService.isItemExists(name)) {
+			System.out.println("Produkt o podanej nazwie istnieje. Podaj inną nazwę lub -1 jeśli nie chcesz kontynuować.");
+			name = scanner.nextLine();
+			if (name.equals("-1")) {
+				return;
+			}
+		}
+		System.out.println("Podaj numer kategorii");
+		long categoryId = Long.parseLong(scanner.nextLine());
+		while (!goodsVerificationService.checkCategoryExists(categoryId)) {
+			System.out.println("Kategoria o podanym numerze nie istnieje. Podaj inny numer lub -1 jeśli nie chcesz kontynuować.");
+			categoryId = Long.parseLong(scanner.nextLine());
+			if (categoryId == -1) {
+				return;
+			}
+		}
+		System.out.println("Podaj numer producenta");
+		long manufacturerId = Long.parseLong(scanner.nextLine());
+		while (!goodsVerificationService.checkManufacturerExists(manufacturerId)) {
+			System.out.println("Producent o podanym numerze nie istnieje. Podaj inny numer lub -1 jeśli nie chcesz kontynuować.");
+			manufacturerId = Long.parseLong(scanner.nextLine());
+			if (manufacturerId == -1) {
+				return;
+			}
+		}
+		System.out.println("Podaj ilość produktu");
+		int quantity = Integer.parseInt(scanner.nextLine());
+		final Item item = goodsRegisterService.addItem(name, categoryId, manufacturerId, quantity);
+		System.out.println("Podaj lokalizację produktu.");
+		System.out.println("Podaj numer regału.");
+		int storageRack = Integer.parseInt(scanner.nextLine());
+		System.out.println("Podaj numer półki.");
+		int shelf = Integer.parseInt(scanner.nextLine());
+		System.out.println("Podaj numer miejsca.");
+		int place = Integer.parseInt(scanner.nextLine());
+		goodsRegisterService.setItemLocation(storageRack, shelf, place, item);
+	}
+
+	private void addItemDescription(Scanner scanner) {
+		System.out.println("Podaj id produktu");
+		Long id = Long.valueOf(scanner.nextLine());
+		System.out.println("Podaj opis produktu");
+		String name = scanner.nextLine();
+		goodsRegisterService.addItemDescription(id, name);
+	}
+
+	private void checkQuantity(Scanner scanner) {
+		System.out.println("Podaj id produktu");
+		Long id = Long.valueOf(scanner.nextLine());
+		goodsVerificationService.checkItemQuantity(id);
+	}
+
+	private void checkExists(Scanner scanner) {
+		System.out.println("Podaj id produktu");
+		Long id = Long.valueOf(scanner.nextLine());
+		goodsVerificationService.checkItemExists(id);
+	}
+
+	private void itemLocation(Scanner scanner) {
+		System.out.println("Podaj id produktu");
+		Long id = Long.valueOf(scanner.nextLine());
+		goodsVerificationService.checkItemLocation(id);
+	}
+
+	private void changeItemQuantity(Scanner scanner) {
+		System.out.println("Podaj id produktu");
+		Long id = Long.valueOf(scanner.nextLine());
+		System.out.println("Podaj ilość produktu");
+		final int quantity = Integer.parseInt(scanner.nextLine());
+		goodsRegisterService.changeItemQuantity(id, quantity);
+	}
+
+	private void removeItem(Scanner scanner) {
+		System.out.println("Podaj id produktu");
+		Long id = Long.valueOf(scanner.nextLine());
+		goodsReleaseService.removeItem(id);
+	}
+}
