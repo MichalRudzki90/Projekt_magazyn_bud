@@ -1,0 +1,111 @@
+package com.pl.warehouse.dto;
+
+import java.util.Map;
+
+public class Item extends BaseDto implements Comparable<Item> {
+
+	private ItemCategory category;
+	private Manufacturer manufacturer;
+	private ItemLocation location;
+	private int quantity;
+	private String description;
+
+	public Item(Long id, String name, ItemCategory category, Manufacturer manufacturer, int quantity) {
+		super(id, name);
+		this.category = category;
+		this.manufacturer = manufacturer;
+		this.quantity = quantity;
+		this.description = "";
+	}
+
+	public Item(String[] itemData, Map<Long, ItemCategory> categories, Map<Long, Manufacturer> manufacturers) {
+		super(Long.valueOf(itemData[0]), itemData[1]);
+		this.quantity = Integer.parseInt(itemData[2]);
+		this.description = itemData[3];
+		this.category = categories.get(Long.valueOf(itemData[4]));
+		this.manufacturer = manufacturers.get(Long.valueOf(itemData[5]));
+		this.location =
+				new ItemLocation(Integer.parseInt(itemData[6]), Integer.parseInt(itemData[7]), Integer.parseInt(itemData[8]));
+	}
+
+	public static String locationHeaders() {
+		return "| Numer regału | Półka | Miejsce";
+	}
+
+	public static String headers() {
+		return "| Numer | Nazwa | Ilość | Opis | Kategoria | Producent";
+	}
+
+	public ItemCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(ItemCategory category) {
+		this.category = category;
+	}
+
+	public Manufacturer getManufacturer() {
+		return manufacturer;
+	}
+
+	public void setManufacturer(Manufacturer manufacturer) {
+		this.manufacturer = manufacturer;
+	}
+
+	public ItemLocation getLocation() {
+		return location;
+	}
+
+	public void setLocation(ItemLocation location) {
+		this.location = location;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String toCsvData() {
+		return getId() + "," +
+				getName() + "," +
+				quantity + "," +
+				description + "," +
+				category.getId() + "," +
+				manufacturer.getId() + "," +
+				location.getStorageRack() + "," +
+				location.getShelf() + "," +
+				location.getPlace();
+	}
+
+	public String location() {
+		return "| " + location.getStorageRack() +
+				" | " + location.getShelf() +
+				" | " + location.getPlace();
+	}
+
+	@Override
+	public String toString() {
+		return "|   " + getId() +
+				"   | " + getName() +
+				" | " + quantity +
+				" | " + description +
+				" | " + category.getName() +
+				" | " + manufacturer.getName();
+	}
+
+	@Override
+	public int compareTo(Item o) {
+		return this.getId().compareTo(o.getId());
+	}
+}
