@@ -1,0 +1,38 @@
+package com.pl.warehouse.dto;
+
+public class ItemLocation {
+
+	private Integer storageRack;
+	private Integer shelf;
+	private Integer place;
+
+	public ItemLocation(Integer storageRack, Integer shelf, Integer place) {
+		this.storageRack = storageRack;
+		this.shelf = shelf;
+		this.place = place;
+	}
+
+	public Integer getStorageRack() {
+		return storageRack;
+	}
+
+	public void setStorageRack(Integer storageRack) {
+		this.storageRack = storageRack;
+	}
+
+	public Integer getShelf() {
+		return shelf;
+	}
+
+	public void setShelf(Integer shelf) {
+		this.shelf = shelf;
+	}
+
+	public Integer getPlace() {
+		return place;
+	}
+
+	public void setPlace(Integer place) {
+		this.place = place;
+	}
+}
