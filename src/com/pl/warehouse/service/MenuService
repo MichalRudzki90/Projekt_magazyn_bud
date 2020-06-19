@@ -1,0 +1,17 @@
+package com.pl.warehouse.service;
+
+public class MenuService {
+
+	private GoodsRegisterService goodsRegisterService;
+	private GoodsVerificationService goodsVerificationService;
+	private GoodsReleaseService goodsReleaseService;
+
+	public MenuService(GoodsRegisterService goodsRegisterService,
+			GoodsVerificationService goodsVerificationService, GoodsReleaseService goodsReleaseService) {
+		this.goodsRegisterService = goodsRegisterService;
+		this.goodsVerificationService = goodsVerificationService;
+		this.goodsReleaseService = goodsReleaseService;
+	}
+
+
+}
