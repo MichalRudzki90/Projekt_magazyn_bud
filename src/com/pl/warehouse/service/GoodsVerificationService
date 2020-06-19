@@ -1,0 +1,98 @@
+package com.pl.warehouse.service;
+
+import com.pl.warehouse.dto.Item;
+import com.pl.warehouse.dto.ItemCategory;
+import com.pl.warehouse.dto.Manufacturer;
+import java.util.Set;
+
+import static com.pl.warehouse.store.GoodsStore.categoriesMap;
+import static com.pl.warehouse.store.GoodsStore.itemsByCategory;
+import static com.pl.warehouse.store.GoodsStore.itemsByManufacturer;
+import static com.pl.warehouse.store.GoodsStore.itemsMap;
+import static com.pl.warehouse.store.GoodsStore.manufacturersMap;
+
+public class GoodsVerificationService extends GoodsAbstractService {
+
+	public void listCategories() {
+		System.out.println(ItemCategory.headers());
+		categoriesMap.values().forEach(m -> System.out.println(m.toString()));
+	}
+
+	public void listItemsByCategory(Long categoryId) {
+		final ItemCategory category = categoriesMap.get(categoryId);
+		if (category != null) {
+			System.out.println(Item.headers());
+			final Set<Item> items = itemsByCategory.get(category);
+			if (items != null) {
+				items.forEach(i -> System.out.println(i.toString()));
+			}
+			else {
+				System.out.println("Brak produktów z danej kategorii,");
+			}
+		}
+		else {
+			System.out.println("Nie ma kategorii dla podanego numeru.");
+		}
+	}
+
+	public void listManufacturers() {
+		System.out.println(Manufacturer.headers());
+		manufacturersMap.values().forEach(m -> System.out.println(m.toString()));
+	}
+
+	public void listItemsByManufacturer(Long manufacturerId) {
+		final Manufacturer manufacturer = manufacturersMap.get(manufacturerId);
+		if (manufacturer != null) {
+			System.out.println(Item.headers());
+			final Set<Item> items = itemsByManufacturer.get(manufacturer);
+			if (items != null) {
+				items.forEach(i -> System.out.println(i.toString()));
+			}
+			else {
+				System.out.println("Brak produktów dla danego producenta,");
+			}
+		}
+		else {
+			System.out.println("Nie ma producenta dla podanego numeru.");
+		}
+	}
+
+	public void listItems() {
+		System.out.println(Item.headers());
+		itemsMap.values().forEach(m -> System.out.println(m.toString()));
+	}
+
+	public void checkItemQuantity(Long itemId) {
+		final Item item = itemsMap.get(itemId);
+		if (item != null) {
+			System.out.println(item.getQuantity());
+		}
+		else {
+			System.out.println("Brak produktu o podanym numerze");
+		}
+	}
+
+	public boolean checkCategoryExists(Long categoryId) {
+		return itemsMap.containsKey(categoryId);
+	}
+
+	public boolean checkManufacturerExists(Long manufacturerId) {
+		return itemsMap.containsKey(manufacturerId);
+	}
+
+	public void checkItemExists(Long itemId) {
+		System.out.println(
+				itemsMap.containsKey(itemId) ? "TAK" : "NIE");
+	}
+
+	public void checkItemLocation(Long itemId) {
+		final Item item = itemsMap.get(itemId);
+		if (item != null) {
+			System.out.println(Item.locationHeaders());
+			System.out.println(item.location());
+		}
+		else {
+			System.out.println("Brak produktu o podanym numerze");
+		}
+	}
+}
